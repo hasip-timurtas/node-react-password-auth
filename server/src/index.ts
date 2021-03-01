@@ -1,5 +1,5 @@
 import mongoose, { Error } from 'mongoose';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import passport from 'passport';
 import passportLocal from 'passport-local';
@@ -9,7 +9,11 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from './model/User';
 
-mongoose.connect('mongodb+srv://@cluster0.q9g9s.mongodb.net/<dbname>?retryWrites=true&w=majority', {
+dotenv.config();
+
+const PORT = 4000;
+
+mongoose.connect(`${process.env.DBLINK}`, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -30,3 +34,25 @@ app.use(session({
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Routes
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body
+    console.log(username, password);
+    try {
+        const hashedPassword: string = await bcrypt.hash(password, 10);
+        const newUser = new User({
+            username,
+            passport: hashedPassword
+        });
+
+        await newUser.save();
+        res.send("Success");
+    } catch (err) {
+        console.log(err);
+        res.send("Error");
+    }
+
+});
+
+app.listen(PORT, () => console.log(`Server listenin on port : ${PORT}`));
