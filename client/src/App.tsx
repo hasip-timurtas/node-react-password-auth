@@ -5,6 +5,7 @@ import HomePage from "./Pages/HomePage";
 import AdminPage from "./Pages/AdminPage";
 import Login from "./Pages/Login";
 import Profile from "./Pages/Profile";
+import "./styles/main.scss"
 
 export default function App() {
     return (
