@@ -99,6 +99,14 @@ app.post('/register', async (req: Request, res: Response) => {
     }
 });
 
+// Login
+app.post('/login', passport.authenticate('local'), (req: Request, res: Response) => {
+    res.send("Succesfully Authenticated");
+})
+
+app.get('/user', (req, res) => {
+    res.send(req.user);
+});
 
 
 app.listen(PORT, () => console.log(`Server listenin on port : ${PORT}`));
