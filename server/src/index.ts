@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
-
+import User from './model/User';
 
 mongoose.connect('mongodb+srv://@cluster0.q9g9s.mongodb.net/<dbname>?retryWrites=true&w=majority', {
     useCreateIndex: true,
