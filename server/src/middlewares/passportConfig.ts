@@ -2,17 +2,18 @@ import User from '../models/User';
 import bcrypt from 'bcryptjs';
 import passportLocal from 'passport-local';
 import { UserInterface, UserInfo } from '../interfaces/UserInterface';
+import { PassportStatic } from 'passport';
 
 const LocalStrategy = passportLocal.Strategy;
 
-const passportConfig = (passport: any) => {
+const passportConfig = (passport: PassportStatic) => {
     passport.use(new LocalStrategy((username, password, done) => {
         User.findOne({ username }, (err: Error, user: UserInterface) => {
             if (err) throw err;
             if (!user) return done(null, false);
-            bcrypt.compare(password, user.password, (err, result) => {
+            bcrypt.compare(password, user.password, (err: Error, result: boolean) => {
                 if (err) throw err;
-                if (result === true) {
+                if (result) {
                     return done(null, user);
                 } else {
                     return done(null, false);
