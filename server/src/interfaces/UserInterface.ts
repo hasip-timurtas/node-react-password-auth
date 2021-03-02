@@ -3,3 +3,8 @@ export interface UserInterface {
     password: string,
     isAdmin: boolean
 }
+
+export interface UserInfo {
+    username: string,
+    isAdmin: boolean
+}

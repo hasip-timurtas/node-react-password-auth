@@ -9,6 +9,7 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from './models/User';
 import { UserInterface } from './interfaces/UserInterface';
+import passportConfig from './middlewares/passportConfig'
 
 dotenv.config();
 
@@ -38,36 +39,8 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Password
-passport.use(new LocalStrategy((username, password, done) => {
-    User.findOne({ username }, (err: Error, user: UserInterface) => {
-        if (err) throw err;
-        if (!user) return done(null, false);
-        bcrypt.compare(password, user.password, (err, result) => {
-            if (err) throw err;
-            if (result === true) {
-                return done(null, user);
-            } else {
-                return done(null, false);
-            }
-        });
-    });
-}));
-
-passport.serializeUser((user: any, cb) => {
-    cb(null, user.id);
-});
-
-passport.deserializeUser((id: string, cb) => {
-    User.findOne({ _id: id }, (err: Error, user: UserInterface) => {
-        const userInfo = {
-            username: user.username,
-            isAdmin: user.isAdmin
-        };
-        cb(err, userInfo);
-    });
-});
-
+// passport config
+passportConfig(passport);
 
 // Routes
 app.post('/register', async (req: Request, res: Response) => {
@@ -100,7 +73,6 @@ app.post('/register', async (req: Request, res: Response) => {
     }
 });
 
-// Login
 app.post('/login', passport.authenticate('local'), (req: Request, res: Response) => {
     res.send("Succesfully Authenticated");
 })
