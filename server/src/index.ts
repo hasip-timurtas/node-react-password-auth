@@ -27,7 +27,8 @@ mongoose.connect(`${process.env.DBLINK}`, {
 // MiddleWare
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+// TODO change with origin : http://localhost:3000
+app.use(cors({ origin: "*", credentials: true }));
 app.use(session({
     secret: "mysecretcode",
     resave: true,
