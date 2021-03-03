@@ -1,14 +1,14 @@
 import User from '../models/User';
 import bcrypt from 'bcryptjs';
 import passportLocal from 'passport-local';
-import { UserInterface, UserInfo } from '../interfaces/UserInterface';
+import { DBUserInterface, UserInterface } from '../interfaces/UserInterface';
 import { PassportStatic } from 'passport';
 
 const LocalStrategy = passportLocal.Strategy;
 
 const passportConfig = (passport: PassportStatic) => {
-    passport.use(new LocalStrategy((username, password, done) => {
-        User.findOne({ username }, (err: Error, user: UserInterface) => {
+    passport.use(new LocalStrategy((username: string, password: string, done: (err: null, id: boolean | DBUserInterface) => void) => {
+        User.findOne({ username }, (err: Error, user: DBUserInterface) => {
             if (err) throw err;
             if (!user) return done(null, false);
             bcrypt.compare(password, user.password, (err: Error, result: boolean) => {
@@ -22,13 +22,13 @@ const passportConfig = (passport: PassportStatic) => {
         });
     }));
 
-    passport.serializeUser((user: any, cb: (err: null, id: string) => void) => {
+    passport.serializeUser((user: DBUserInterface, cb: (err: null, id: string) => void) => {
         cb(null, user._id);
     });
 
-    passport.deserializeUser((id: string, cb: (err: Error, userInfo: UserInfo) => void) => {
-        User.findOne({ _id: id }, (err: Error, user: UserInterface) => {
-            const userInfo: UserInfo = {
+    passport.deserializeUser((id: string, cb: (err: Error, userInfo: UserInterface) => void) => {
+        User.findOne({ _id: id }, (err: Error, user: DBUserInterface) => {
+            const userInfo: UserInterface = {
                 username: user.username,
                 isAdmin: user.isAdmin,
                 id: user._id

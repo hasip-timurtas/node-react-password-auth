@@ -7,7 +7,7 @@ import session from 'express-session';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from './models/User';
-import { UserInterface, UserInfo } from './interfaces/UserInterface';
+import { DBUserInterface, UserInterface } from './interfaces/UserInterface';
 import passportConfig from './middlewares/passportConfig'
 
 dotenv.config();
@@ -51,7 +51,7 @@ passportConfig(passport);
 const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const { user }: any = req;
     if (user) {
-        User.findOne({ username: user.username }, (err: Error, data: UserInterface) => {
+        User.findOne({ username: user.username }, (err: Error, data: DBUserInterface) => {
             if (err) throw err;
             if (data?.isAdmin) {
                 next();
@@ -74,7 +74,7 @@ app.post('/register', async (req: Request, res: Response) => {
             return;
         }
 
-        User.findOne({ username }, async (err: Error, doc: UserInterface) => {
+        User.findOne({ username }, async (err: Error, doc: DBUserInterface) => {
             if (err) throw err;
             if (doc) res.send("User Already Exists");
             if (!doc) {
@@ -90,7 +90,6 @@ app.post('/register', async (req: Request, res: Response) => {
         });
 
     } catch (err) {
-        console.log(err);
         res.send("Error");
     }
 });
@@ -109,10 +108,9 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/getallusers', isAdminMiddleware, async (req, res) => {
-    await User.find({}, (err: Error, data: UserInterface[]) => {
+    await User.find({}, (err: Error, data: DBUserInterface[]) => {
         if (err) res.send("Error");
-        console.log(data);
-        const users: UserInfo[] = data.map((user: UserInterface) => {
+        const users: UserInterface[] = data.map((user: DBUserInterface) => {
             return {
                 id: user._id,
                 isAdmin: user.isAdmin,
