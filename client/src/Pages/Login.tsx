@@ -13,7 +13,7 @@ export default function Login() {
                 if (res.data === 'success') {
                     // window.location.href = '/';
                 }
-            }).catch(e => {
+            }, (e) => {
                 console.log(e);
             });
     }

@@ -2,6 +2,6 @@ import React, { useContext } from 'react';
 import { myContext } from './Context';
 
 export default function HomePage() {
-    const cxt = useContext(myContext);
-    return (<div>HomePage { cxt}</div>);
+    const user = useContext(myContext);
+    return (<div>HomePage, Currently logged in user is  { user.username}</div>);
 }
