@@ -1,5 +1,5 @@
 import mongoose, { Error } from 'mongoose';
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
@@ -36,7 +36,7 @@ app.options('*', cors(corsConfig));
 
 app.use(cookieParser());
 app.use(session({
-    secret: "mysecretcode",
+    secret: "bubirgizlikoddur",
     resave: true,
     saveUninitialized: true
 }));
@@ -45,6 +45,23 @@ app.use(passport.session());
 
 // passport config
 passportConfig(passport);
+
+
+// Admin Middleware
+const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const { user }: any = req;
+    if (user) {
+        User.findOne({ username: user.username }, (err: Error, data: UserInterface) => {
+            if (err) throw err;
+            if (data?.isAdmin) {
+                next();
+            }
+            res.send("Sorry only admin can perform this!");
+        })
+    } else {
+        res.send("Sorry only admin can perform this!");
+    }
+}
 
 // Routes
 app.post('/register', async (req: Request, res: Response) => {
@@ -78,12 +95,30 @@ app.post('/register', async (req: Request, res: Response) => {
 });
 
 app.post('/login', passport.authenticate('local'), (req: Request, res: Response) => {
-    res.send("Succesfully Authenticated");
+    res.send("success");
 })
 
 app.get('/user', (req, res) => {
     res.send(req.user);
 });
 
+app.get('/logout', (req, res) => {
+    req.logout();
+    res.send("success")
+});
+
+app.get('/getallusers', isAdminMiddleware, async (req, res) => {
+    await User.find({}, (err: Error, data: UserInterface[]) => {
+        if (err) res.send("Error");
+        console.log(data);
+        res.send({ data: data });
+    });
+});
+
+app.post('/deleteuser', isAdminMiddleware, (req, res) => {
+    User.findByIdAndDelete(req.body.id).then(e => {
+        res.send("success");
+    })
+});
 
 app.listen(PORT, () => console.log(`Server listenin on port : ${PORT}`));
