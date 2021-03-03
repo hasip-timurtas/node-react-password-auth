@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import serverApi from '../Apis/ServerApi';
+import { AxiosResponse } from 'axios';
 
 export default function Login() {
     const [username, setUsername] = useState<string>('');
@@ -8,12 +9,12 @@ export default function Login() {
     const handleLogin = () => {
         console.log(username, password);
         serverApi.post('/login', { username, password })
-            .then(res => {
+            .then((res: AxiosResponse) => {
                 console.log(res.data);
                 if (res.data === 'success') {
                     // window.location.href = '/';
                 }
-            }, (e) => {
+            }, (e: Error) => {
                 console.log(e);
             });
     }

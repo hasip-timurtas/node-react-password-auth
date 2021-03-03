@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import serverApi from '../Apis/ServerApi';
+import { AxiosResponse } from 'axios';
 
 export default function Register() {
     const [username, setUsername] = useState<string>('');
@@ -8,7 +9,7 @@ export default function Register() {
     const handleRegister = () => {
         console.log(username, password);
         serverApi.post('/register', { username, password })
-            .then(res => {
+            .then((res: AxiosResponse) => {
                 console.log(res.data);
                 if (res.data === 'success') {
                     // window.location.href = '/';

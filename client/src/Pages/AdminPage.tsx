@@ -7,7 +7,7 @@ import { AxiosResponse } from 'axios';
 export default function AdminPage() {
     const [data, setData] = useState<UserInterface[]>();
     const [selectedUserId, setSelectedUserId] = useState<string>();
-    const user: UserInterface = useContext(myContext);
+    const user = useContext(myContext);
 
     useEffect(() => {
         serverApi.get('/getallusers').then((res: AxiosResponse) => {
