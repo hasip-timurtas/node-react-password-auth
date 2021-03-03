@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import serverApi from '../Apis/ServerApi';
 
-export default function Login() {
+export default function Register() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const handleLogin = () => {
+    const handleRegister = () => {
         console.log(username, password);
-        serverApi.post('/login', { username, password })
+        serverApi.post('/register', { username, password })
             .then(res => {
                 console.log(res.data);
                 if (res.data === 'success') {
@@ -22,6 +22,6 @@ export default function Login() {
         <h1>Login</h1>
         <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
         <input type="text" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-        <button onClick={handleLogin} >Login</button> <br />
+        <button onClick={handleRegister}>Register</button> <br />
     </div>);
 }

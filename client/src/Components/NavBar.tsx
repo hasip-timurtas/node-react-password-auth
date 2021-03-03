@@ -1,16 +1,27 @@
 import React, { useContext, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { myContext } from "../Pages/Context";
+import serverApi from "../Apis/ServerApi";
 
 export default function NavBar() {
     const user = useContext(myContext);
     console.log(user);
+
+    const handleLogout = () => {
+        serverApi.get('/logout').then(res => {
+            console.log(res.data);
+            if (res.data === 'success') {
+                // window.location.href = '/';
+            }
+        });
+    }
+
     return (
         <div className="nav-container">
             {user ?
                 (
                     <Fragment>
-                        <Link to="/logout">Logout</Link>
+                        <Link onClick={handleLogout} to="/logout">Logout</Link>
                         <Link to="/profile">Profile</Link>
                         {user.isAdmin && <Link to="/admin">Admin</Link>}
 
