@@ -104,7 +104,7 @@ app.get('/getallusers', isAdminMiddleware, async (req, res) => {
 });
 
 app.post('/deleteuser', isAdminMiddleware, (req, res) => {
-    const { id }: any = req.body;
+    const { id }: any = req?.body;
     if (!id) res.send("Invalid Argument");
 
     User.findByIdAndDelete(id).then(e => {
