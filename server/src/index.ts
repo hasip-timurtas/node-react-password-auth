@@ -55,11 +55,12 @@ const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
             if (err) throw err;
             if (data?.isAdmin) {
                 next();
+            } else {
+                res.send("Sorry only admin can perform this!");
             }
-            res.send("Sorry only admin can perform this!");
         })
     } else {
-        res.send("Sorry only admin can perform this!");
+        res.send("Sorry you are not logged in!");
     }
 }
 
@@ -116,8 +117,13 @@ app.get('/getallusers', isAdminMiddleware, async (req, res) => {
 });
 
 app.post('/deleteuser', isAdminMiddleware, (req, res) => {
-    User.findByIdAndDelete(req.body.id).then(e => {
+    const { id }: any = req.body;
+    if (!id) res.send("Invalid Argument");
+
+    User.findByIdAndDelete(id).then(e => {
         res.send("success");
+    }).catch((e: Error) => {
+        res.send("error " + e.message);
     })
 });
 
