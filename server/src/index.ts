@@ -7,7 +7,7 @@ import session from 'express-session';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from './models/User';
-import { UserInterface } from './interfaces/UserInterface';
+import { UserInterface, UserInfo } from './interfaces/UserInterface';
 import passportConfig from './middlewares/passportConfig'
 
 dotenv.config();
@@ -112,7 +112,15 @@ app.get('/getallusers', isAdminMiddleware, async (req, res) => {
     await User.find({}, (err: Error, data: UserInterface[]) => {
         if (err) res.send("Error");
         console.log(data);
-        res.send({ data: data });
+        const users: UserInfo[] = data.map((user: UserInterface) => {
+            return {
+                id: user._id,
+                isAdmin: user.isAdmin,
+                username: user.username
+            }
+        });
+
+        res.send(users);
     });
 });
 

@@ -30,7 +30,8 @@ const passportConfig = (passport: PassportStatic) => {
         User.findOne({ _id: id }, (err: Error, user: UserInterface) => {
             const userInfo: UserInfo = {
                 username: user.username,
-                isAdmin: user.isAdmin
+                isAdmin: user.isAdmin,
+                id: user._id
             };
             cb(err, userInfo);
         });
