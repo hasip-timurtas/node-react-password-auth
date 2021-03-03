@@ -11,7 +11,6 @@ export default function AdminPage() {
 
     useEffect(() => {
         serverApi.get('/getallusers').then((res: AxiosResponse) => {
-            console.log(res.data);
             const users = res.data.filter((e: UserInterface) => e.username !== user.username);
             setData(users);
         });

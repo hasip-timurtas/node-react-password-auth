@@ -10,9 +10,8 @@ export default function Login() {
         console.log(username, password);
         serverApi.post('/login', { username, password })
             .then((res: AxiosResponse) => {
-                console.log(res.data);
                 if (res.data === 'success') {
-                    // window.location.href = '/';
+                    window.location.href = '/';
                 }
             }, (e: Error) => {
                 console.log(e);

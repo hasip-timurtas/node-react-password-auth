@@ -6,13 +6,11 @@ import { AxiosResponse } from "axios";
 
 export default function NavBar() {
     const user = useContext(myContext);
-    console.log(user);
 
     const handleLogout = () => {
         serverApi.get('/logout').then((res: AxiosResponse) => {
-            console.log(res.data);
             if (res.data === 'success') {
-                // window.location.href = '/';
+                window.location.href = '/';
             }
         });
     }

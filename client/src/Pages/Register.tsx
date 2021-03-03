@@ -10,9 +10,8 @@ export default function Register() {
         console.log(username, password);
         serverApi.post('/register', { username, password })
             .then((res: AxiosResponse) => {
-                console.log(res.data);
                 if (res.data === 'success') {
-                    // window.location.href = '/';
+                    window.location.href = '/';
                 }
             }).catch(e => {
                 console.log(e);
