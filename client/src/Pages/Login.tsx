@@ -16,9 +16,7 @@ export default function Login() {
     }
 
     const getUser = () => {
-        serverApi.get('/user', {
-            withCredentials: true
-        }).then(res => {
+        serverApi.get('/user').then(res => {
             console.log(res.data);
         })
     }

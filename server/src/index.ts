@@ -2,7 +2,6 @@ import mongoose, { Error } from 'mongoose';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import passport from 'passport';
-import passportLocal from 'passport-local';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import bcrypt from 'bcryptjs';
@@ -14,7 +13,6 @@ import passportConfig from './middlewares/passportConfig'
 dotenv.config();
 
 const PORT = 4000;
-const LocalStrategy = passportLocal.Strategy;
 
 mongoose.connect(`${process.env.DBLINK}`, {
     useCreateIndex: true,
@@ -29,13 +27,19 @@ mongoose.connect(`${process.env.DBLINK}`, {
 const app = express();
 app.use(express.json());
 // TODO change with origin : http://localhost:3000
-app.use(cors({ origin: "*", credentials: true }));
+const corsConfig = {
+    origin: true,
+    credentials: true,
+};
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
+
+app.use(cookieParser());
 app.use(session({
     secret: "mysecretcode",
     resave: true,
     saveUninitialized: true
 }));
-app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 

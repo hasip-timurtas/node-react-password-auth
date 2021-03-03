@@ -5,18 +5,21 @@ import HomePage from "./Pages/HomePage";
 import AdminPage from "./Pages/AdminPage";
 import Login from "./Pages/Login";
 import Profile from "./Pages/Profile";
-import "./styles/main.scss"
+import "./styles/main.scss";
+import Context from "./Pages/Context";
 
 export default function App() {
     return (
         <Router>
-            <NavBar />
-            <Switch>
-                <Route path='/' exact component={HomePage}></Route>
-                <Route path='/admin' component={AdminPage}></Route>
-                <Route path='/login' component={Login}></Route>
-                <Route path='/profile' component={Profile}></Route>
-            </Switch>
+            <Context>
+                <NavBar />
+                <Switch>
+                    <Route path='/' exact component={HomePage}></Route>
+                    <Route path='/admin' component={AdminPage}></Route>
+                    <Route path='/login' component={Login}></Route>
+                    <Route path='/profile' component={Profile}></Route>
+                </Switch>
+            </Context>
         </Router>
     );
 }
