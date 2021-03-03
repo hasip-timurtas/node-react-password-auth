@@ -9,10 +9,10 @@ import dotenv from 'dotenv';
 import User from './models/User';
 import { DBUserInterface, UserInterface } from './interfaces/UserInterface';
 import passportConfig from './middlewares/passportConfig'
+import isAdminMiddleware from './middlewares/isAdmin'
 
 dotenv.config();
-
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 mongoose.connect(`${process.env.DBLINK}`, {
     useCreateIndex: true,
@@ -26,7 +26,6 @@ mongoose.connect(`${process.env.DBLINK}`, {
 // MiddleWare
 const app = express();
 app.use(express.json());
-// TODO change with origin : http://localhost:3000
 const corsConfig = {
     origin: true,
     credentials: true,
@@ -46,26 +45,8 @@ app.use(passport.session());
 // passport config
 passportConfig(passport);
 
-
-// Admin Middleware
-const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const { user }: any = req;
-    if (user) {
-        User.findOne({ username: user.username }, (err: Error, data: DBUserInterface) => {
-            if (err) throw err;
-            if (data?.isAdmin) {
-                next();
-            } else {
-                res.send("Sorry only admin can perform this!");
-            }
-        })
-    } else {
-        res.send("Sorry you are not logged in!");
-    }
-}
-
 // Routes
-app.post('/register', async (req: Request, res: Response) => {
+app.post('/register', (req: Request, res: Response) => {
     try {
         const { username, password } = req?.body
 
@@ -128,8 +109,8 @@ app.post('/deleteuser', isAdminMiddleware, (req, res) => {
 
     User.findByIdAndDelete(id).then(e => {
         res.send("success");
-    }).catch((e: Error) => {
-        res.send("error " + e.message);
+    }).catch((err: Error) => {
+        res.send("error " + err.message);
     })
 });
 
