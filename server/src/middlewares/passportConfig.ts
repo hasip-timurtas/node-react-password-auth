@@ -6,6 +6,14 @@ import { PassportStatic } from 'passport';
 
 const LocalStrategy = passportLocal.Strategy;
 
+/**
+ * Sets the configuration of passportjs
+ * For preparing express passport middleware only.
+ * Contains passport.use, serializeUser and deserializeUser
+ * 
+ * @param {PassportStatic} passport passportjs package itself
+ */
+
 const passportConfig = (passport: PassportStatic) => {
     passport.use(new LocalStrategy((username: string, password: string, done: (err: null, id: boolean | DBUserInterface) => void) => {
         User.findOne({ username }, (err: Error, user: DBUserInterface) => {

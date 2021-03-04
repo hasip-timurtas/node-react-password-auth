@@ -14,6 +14,10 @@ import isAdminMiddleware from './middlewares/isAdmin'
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 
+/**
+ * MongoDb connection 
+ * We start the connection here. take the DBLINK from .env file 
+ */
 mongoose.connect(`${process.env.DBLINK}`, {
     useCreateIndex: true,
     useNewUrlParser: true,
@@ -23,7 +27,12 @@ mongoose.connect(`${process.env.DBLINK}`, {
     console.log('MongoDb Connected');
 });
 
-// MiddleWare
+
+/**
+ * MiddleWare Configurations 
+ * All the express setup and middlewares set here.
+ * Which are json, cors, cookieparser, session, passport.
+ */
 const app = express();
 app.use(express.json());
 const corsConfig = {
@@ -42,10 +51,21 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// passport config
+
+/**
+ * Passport config
+ * We call Passport auth configuration here.
+ * It contains all necesary configuration.
+ */
 passportConfig(passport);
 
-// Routes
+/**
+ * Routes
+ * All the routes that we need for the application are her.
+ * Which are: Register, Login, User, Logout for non admin users 
+ * and getallusers, deleteuser for admin users
+ */
+
 app.post('/register', (req: Request, res: Response) => {
     try {
         const { username, password } = req?.body
@@ -104,7 +124,7 @@ app.get('/getallusers', isAdminMiddleware, async (req, res) => {
 });
 
 app.post('/deleteuser', isAdminMiddleware, (req, res) => {
-    const { id }: any = req?.body;
+    const { id } = req?.body;
     if (!id) res.send("Invalid Argument");
 
     User.findByIdAndDelete(id).then(e => {
